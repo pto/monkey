@@ -1,55 +1,56 @@
 // Package token encodes tokens for the Monkey language.
 package token
 
-// TokenType represents the type of a Monkey token.
-type TokenType string
+// Type represents the type of a Monkey token.
+type Type string
 
 // Token represents a single concrete Monkey token.
 type Token struct {
-	Type    TokenType
+	Type
 	Literal string
 }
 
+// Enumeration of Types.
 const (
-	ILLEGAL TokenType = "ILLEGAL"
-	EOF     TokenType = "EOF"
+	ILLEGAL Type = "ILLEGAL"
+	EOF     Type = "EOF"
 
 	// Identifiers and literals
-	IDENT TokenType = "IDENT"
-	INT   TokenType = "INT"
+	IDENT Type = "IDENT"
+	INT   Type = "INT"
 
 	// Operators
-	ASSIGN   TokenType = "="
-	PLUS     TokenType = "+"
-	MINUS    TokenType = "-"
-	BANG     TokenType = "!"
-	ASTERISK TokenType = "*"
-	SLASH    TokenType = "/"
+	ASSIGN   Type = "="
+	PLUS     Type = "+"
+	MINUS    Type = "-"
+	BANG     Type = "!"
+	ASTERISK Type = "*"
+	SLASH    Type = "/"
 
-	LT     TokenType = "<"
-	GT     TokenType = ">"
-	EQ     TokenType = "=="
-	NOT_EQ TokenType = "!="
+	LT    Type = "<"
+	GT    Type = ">"
+	EQ    Type = "=="
+	NOTEQ Type = "!="
 
 	// Delimiters
-	COMMA     TokenType = ","
-	SEMICOLON TokenType = ";"
-	LPAREN    TokenType = "("
-	RPAREN    TokenType = ")"
-	LBRACE    TokenType = "{"
-	RBRACE    TokenType = "}"
+	COMMA     Type = ","
+	SEMICOLON Type = ";"
+	LPAREN    Type = "("
+	RPAREN    Type = ")"
+	LBRACE    Type = "{"
+	RBRACE    Type = "}"
 
 	// Keywords
-	FUNCTION TokenType = "FUNCTION"
-	LET      TokenType = "LET"
-	TRUE     TokenType = "TRUE"
-	FALSE    TokenType = "FALSE"
-	IF       TokenType = "IF"
-	ELSE     TokenType = "ELSE"
-	RETURN   TokenType = "RETURN"
+	FUNCTION Type = "FUNCTION"
+	LET      Type = "LET"
+	TRUE     Type = "TRUE"
+	FALSE    Type = "FALSE"
+	IF       Type = "IF"
+	ELSE     Type = "ELSE"
+	RETURN   Type = "RETURN"
 )
 
-var keywords = map[string]TokenType{
+var keywords = map[string]Type{
 	"fn":     FUNCTION,
 	"let":    LET,
 	"true":   TRUE,
@@ -59,8 +60,8 @@ var keywords = map[string]TokenType{
 	"return": RETURN,
 }
 
-// LookupIdentifier returns a keyword or IDENT TokenType for a character string.
-func LookupIdentifier(ident string) TokenType {
+// LookupIdentifier returns a keyword or IDENT Type for a character string.
+func LookupIdentifier(ident string) Type {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}

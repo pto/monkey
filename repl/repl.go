@@ -10,8 +10,10 @@ import (
 	"github.com/pto/monkey/token"
 )
 
+// PROMPT is the REPL command prompt.
 const PROMPT = ">> "
 
+// Start begins a REPL from in to out.
 func Start(in io.Reader, out io.Writer) {
 	scanner := bufio.NewScanner(in)
 
