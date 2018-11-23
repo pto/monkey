@@ -1,7 +1,9 @@
+// Package lexer scans Monkey source code for tokens.
 package lexer
 
-import "monkey/token"
+import "github.com/pto/monkey/token"
 
+// Lexer is a scanner for Monkey source code.
 type Lexer struct {
 	input        string
 	position     int  // position of current character
@@ -9,12 +11,15 @@ type Lexer struct {
 	ch           byte // current character
 }
 
+// New creates a new Lexer over the input string.
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
+// readChar reads the next character in the input string and advances the read
+// position.
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
@@ -22,9 +27,19 @@ func (l *Lexer) readChar() {
 		l.ch = l.input[l.readPosition]
 	}
 	l.position = l.readPosition
-	l.readPosition += 1
+	l.readPosition++
 }
 
+// peekChar reads the next character in the input string but does not advance
+// the read position.
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	}
+	return l.input[l.readPosition]
+}
+
+// NextToken returns the next token scanned by the Lexer.
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -32,7 +47,14 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{Type: token.EQ, Literal: literal}
+		} else {
+			tok = newToken(token.ASSIGN, l.ch)
+		}
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
 	case '(':
@@ -43,6 +65,25 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.COMMA, l.ch)
 	case '+':
 		tok = newToken(token.PLUS, l.ch)
+	case '-':
+		tok = newToken(token.MINUS, l.ch)
+	case '!':
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
+		} else {
+			tok = newToken(token.BANG, l.ch)
+		}
+	case '/':
+		tok = newToken(token.SLASH, l.ch)
+	case '*':
+		tok = newToken(token.ASTERISK, l.ch)
+	case '<':
+		tok = newToken(token.LT, l.ch)
+	case '>':
+		tok = newToken(token.GT, l.ch)
 	case '{':
 		tok = newToken(token.LBRACE, l.ch)
 	case '}':
@@ -67,6 +108,8 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// readIdentifier returns the lexeme for an identifier and advances the
+// read position past it.
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -75,6 +118,8 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
+// readNumber returns the lexeme for an integer and advances the read
+// position past it.
 func (l *Lexer) readNumber() string {
 	position := l.position
 	for isDigit(l.ch) {
@@ -83,20 +128,24 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+// skipWhitespace advances the read position to the next non-blank.
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
 }
 
+// newToken is a wrapper for a Token struct literal.
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
+// isLetter returns true for 'a' through 'z', 'A' through 'Z' and underscore.
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
+// isDigit returns true for a decimal digit.
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
