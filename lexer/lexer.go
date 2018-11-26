@@ -1,5 +1,5 @@
 // Package lexer scans Monkey source code for tokens.
-package lexer
+package lexer // import "github.com/pto/monkey/lexer"
 
 import "github.com/pto/monkey/token"
 

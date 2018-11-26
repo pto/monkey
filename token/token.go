@@ -1,5 +1,5 @@
 // Package token encodes tokens for the Monkey language.
-package token
+package token // import "github.com/pto/monkey/token"
 
 // Type represents the type of a Monkey token.
 type Type string

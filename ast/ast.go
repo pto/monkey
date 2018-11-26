@@ -1,9 +1,10 @@
 // Package ast defines an Abstract Syntax Tree for the Monkey programming
 // language.
-package ast
+package ast // import "github.com/pto/monkey/ast"
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/pto/monkey/token"
 )
@@ -142,4 +143,67 @@ func (es *ExpressionStatement) String() string {
 		return es.Expression.String()
 	}
 	return ""
+}
+
+// IntegerLiteral is a Node representing an integer literal.
+type IntegerLiteral struct {
+	Token token.Token
+	Value int64
+}
+
+func (il *IntegerLiteral) expressionNode() {}
+
+// TokenLiteral for an integer literal returns the literal.
+func (il *IntegerLiteral) TokenLiteral() string {
+	return il.Token.Literal
+}
+
+// String returns a description of the IntegerLiteral.
+func (il *IntegerLiteral) String() string {
+	return il.Token.Literal
+}
+
+// PrefixExpression is a Node representing a prefix expression.
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) expressionNode() {}
+
+// TokenLiteral for a prefix expression returns the operator literal.
+func (pe *PrefixExpression) TokenLiteral() string {
+	return pe.Token.Literal
+}
+
+// String returns a description of the PrefixExpression.
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+	return out.String()
+}
+
+// InfixExpression is a Node representing an infix expression.
+type InfixExpression struct {
+	Token    token.Token
+	Left     Expression
+	Operator string
+	Right    Expression
+}
+
+func (oe *InfixExpression) expressionNode() {}
+
+// TokenLiteral for an infix expression returns the operator.
+func (oe *InfixExpression) TokenLiteral() string {
+	return oe.Token.Literal
+}
+
+// String returns a description of the InfixExpression.
+func (oe *InfixExpression) String() string {
+	return fmt.Sprintf("(%s %s %s)", oe.Left.String(), oe.Operator,
+		oe.Right.String())
 }

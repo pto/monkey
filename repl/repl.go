@@ -1,5 +1,5 @@
 // Package repl provides a Read Eval Print Loop for the Monkey lanaguage.
-package repl
+package repl // import "github.com/pto/monkey/repl"
 
 import (
 	"bufio"
