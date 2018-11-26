@@ -183,18 +183,18 @@ func (p *Parser) parseExpression(precedence precedence) ast.Expression {
 		p.noPrefixParseFnError(p.curToken.Type)
 		return nil
 	}
-	leftExp := prefix()
+	exp := prefix()
 
 	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
 		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
-			return leftExp
+			return exp
 		}
 		p.nextToken()
-		leftExp = infix(leftExp)
+		exp = infix(exp)
 	}
 
-	return leftExp
+	return exp
 }
 
 // parseIdentifier returns an Identifier Expression from the current token.
